@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ $# == 3 ]; then
+if [ "$#" = "3" ]; then
 	OLD_PREFIX=$1
 	NEW_PREFIX=$2
 	FILENAME=$3
@@ -11,7 +11,7 @@ if [ $# == 3 ]; then
 fi
 
 
-if [ $# == 2 ]; then
+if [ "$#" = "2" ]; then
 	while read line; 
 	do 
 		OLD_PREFIX=$1

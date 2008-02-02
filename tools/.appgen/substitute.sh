@@ -1,12 +1,12 @@
 #!/bin/sh
 
 
-if [ $# -lt 2 ]; then
+if [ "$#" = "2" ]; then
 	echo "usage: substitute.sh <variable to replace> <value to replace with> <filename | STDIN>"
 	exit 1
 fi
 
-if [ $# == 3 ]; then
+if [ "$#" = "3" ]; then
 	VARIABLE=$1
 	VALUE=$2
 	FILENAME=$3
@@ -17,7 +17,7 @@ if [ $# == 3 ]; then
 	exit 0
 fi
 
-if [ $# == 2 ]; then
+if [ "$#" = "2" ]; then
     while read line; 
     do
 		VARIABLE=$1

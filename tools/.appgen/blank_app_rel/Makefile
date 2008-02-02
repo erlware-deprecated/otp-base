@@ -13,7 +13,8 @@ include ../../build/otp.mk
 include ./vsn.mk
 
 USR_LIBPATH=../../lib
-FSLIB_DIR=$(ERLWARE_HOME)/lib/$(shell ls $(ERLWARE_HOME)/lib | grep fslib | sort -r | head -n 1)
+ERLWARE_LIB_PATH=$(ERLWARE_HOME)/application_packages/$(TARGET_ERTS_VSN)/lib
+FSLIB_DIR=$(ERLWARE_LIB_PATH)/$(shell ls $(ERLWARE_LIB_PATH) | grep fslib | sort -r | head -n 1)
 INSTALL_DIR=/usr/local/lib
 ABS_USER_LIBPATH=$(shell cd ../../lib;pwd)
 
@@ -154,7 +155,7 @@ $(LOCAL_SCRIPT_AND_BOOT_FILES):
 	@echo "FSLIB_DIR: $(FSLIB_DIR)"
 	@ erl -pz $(FSLIB_DIR)/ebin \
 	      -noshell \
-	      -s fs_lib commandline_apply fs_boot_smithe make_script_and_boot [\"$(ERLWARE_HOME)/lib/*\",\"$(ERL_RUN_TOP)/*\",\"$(USR_LIBPATH)\"] \
+	      -s fs_lib commandline_apply fs_boot_smithe make_script_and_boot [\"$(ERLWARE_LIB_PATH)/*\",\"$(ERL_RUN_TOP)/*\",\"$(USR_LIBPATH)\"] \
                 \"$$(basename `pwd`).rel.src.tmp\" \
                 [local] \
 	      -s init stop

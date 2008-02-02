@@ -1,14 +1,14 @@
 %%% -*- mode:erlang -*-
 {release, 
- {"%%APP_NAME%%_rel", "%REL_VSN%"},
+ {"%%REL_NAME%%", "%REL_VSN%"},
  erts,
  [
   kernel,
   stdlib,
   sasl,
+  eunit,
   fslib,
-  gas,
-  %%APP_NAME%%
+  gas
  ]
 }. 
 

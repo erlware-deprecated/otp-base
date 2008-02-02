@@ -10,7 +10,6 @@
   % All modules used by the application. 
   {modules,
    [
-	%MODULES%
    ]},
 
   % All of the registered names the application uses. This can be ignored.

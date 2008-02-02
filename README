@@ -3,13 +3,13 @@ Much more information on these topics can be found at www.erlware.org
 Downloading Dependencies
 ========================
 
-OTP Base requires two applications in order to run correctly, the first is fslib, the second is GAS. The easiest way to get these applications is to download faxien, code.google.com/p/faxien and use it to install both fslib and gas.  
+OTP Base requires a few erlang applications in order to run correctly. The easiest way to get these applications is first to install Erlang from source and then to download faxien, code.google.com/p/faxien and use it to install the additional apps that don't come bundled with Erlang.
 
-1. Download and untar faxien
-2. run the install script provided with faxien.
-3. install gas and fslib
+1. Bootstrap faxien with the appropriate bootstrapper from the download site.
+2. install the applications
  - run 'sudo /usr/local/erlware/bin/faxien install_app fslib'
  - run 'sudo /usr/local/erlware/bin/faxien install_app gas'
+ - run 'sudo /usr/local/erlware/bin/faxien install_app eunit'
 
 at this point you should be ready to go. 
 
@@ -27,54 +27,39 @@ export ERL_RUN_TOP=/home/jdoe/erlang
 Creating a new application
 ==========================
 
-A new application can be created by using the appgen utility in otp/tools/utilities.
-This utility will create a basic OTP app framework under the otp/lib directory and
-an OTP release under the otp/release directory.  
+A new application can be created by using the application_generation utility in tools/utilities.
+This utility will create a basic OTP app framework under the lib directory 
 
-usage: appgen <appname> <prefix> 
+usage: application_generation <app-name> <prefix> 
 
 Appname is the name of the application that you would like to create.  The prefix is 
 usually the first letter of each word in the appname.  This prefix is to avoid name
 clashes between applications included in a release (Erlang does not have packages).
 
-example usage: appgen my_app ma
+example usage: application_generation my_app ma
 
 which results in 
 
-otp/lib/my_app & otp/release/my_app_rel
+lib/my_app 
+
+Creating a new release
+======================
+
+A release is the OTP packaging structure that binds together a number of applications, configuration, and startup scripts to create a standalone Erlang service.  To create a new release from which to run your application(s) you can use the tools/utilities/release_generation script. 
+
+usage: release_generation <release-name>
+example usage: release_generation test
+
+The example above will create a release called test under release/test
 
 Running a release
 =================
 
-Your release should contain all that you need to run your application.  If your application
-depends on any applications that are supplied outside of this build tree or OTP itself then
-they may be added to the <appname>_rel.rel.src file.  If the extra applications are present
-in this build tree then they will be found by the make process and included in the final 
-release.
+Your release should contain all that you need to run your application. You have only to exit your .rel.src file to add to it the applications you have developed over in the lib side.  If your application depends on any applications that are supplied outside of your otp-base build tree you can always install them with faxien and then add them to your .rel.src file as well.  
 
-To run a release there are two options: "local" and installed. The local version can be found
-in the otp/release/<appname>_rel/local directory which is added by the make process.  This 
-should be used during development to run your release interactively via an Erlang shell.
-To run a release in local mode cd into the "local" directory and run <appname>_rel.sh.
+To run a release there are two options: The first is local. A local version can be found in the otp/release/<release-name>/local directory which is added by the make process.  This should be used during development to run your release interactively via an Erlang shell.  To run a release in local mode cd into the "local" directory and run <release-name>.sh.
 
-The second way to run a release is to install it and run it as a daemon.  This is used for 
-applications in a production setting.  To do this you need to first run make & make install
-from the <appname>_rel directory.  This will place a complete production ready versioned 
-release in the /usr/local/lib/ directory under <appname>_rel.  To run an installed release
-cd to /usr/local/lib/<appname>_rel/release/<rel_vsn> and run <appname>_rel.sh.  
-
-In the case where you want to create a production ready release on one machine and then deploy it
-on multiple identical machines you may create a production tar archive.  To do this run 
-make & make tar from the otp/release/<appname>_rel/ directory. This will create a tar file conataining 
-the release name and version number in the file name.  This tar can be shipped to its destination and 
-untarred.  Within the untarred directory there is a shell script entitled install.sh.  Running this
-script will install the release by default in /usr/local/lib/<appname>_rel.  An optional argument
-can be provided that will direct the installation to a different directory.
-
-Example install.sh /opt/lib 
-
-This will install the release in /opt/lib/<appname>_rel
-  
+In the case where you want to create a production ready release on one machine and then deploy it on multiple identical machines you may create a production package with 'make pacakge'.  To do this run 'make package' from the release/<release-name> directory. This will create a directory '<release-name>-<release-vsn>.  This this directory can be tarred up and the tar can be shipped to its destination and installed with faxien.  This directory may also be published to a repo for remote installation on another box via faxien.  See the docs for faxien at erlware.org for more details on this.  
 
  
 

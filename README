@@ -57,7 +57,7 @@ Running a release
 
 Your release should contain all that you need to run your application. You have only to exit your .rel.src file to add to it the applications you have developed over in the lib side.  If your application depends on any applications that are supplied outside of your otp-base build tree you can always install them with faxien and then add them to your .rel.src file as well.  
 
-To run a release there are two options: The first is local. A local version can be found in the otp/release/<release-name>/local directory which is added by the make process.  This should be used during development to run your release interactively via an Erlang shell.  To run a release in local mode cd into the "local" directory and run <release-name>.sh.
+To run a release there are two options: The first is local. A local version can be found in the release/<release-name>/local directory which is added by the make process.  This should be used during development to run your release interactively via an Erlang shell.  To run a release in local mode cd into the "local" directory and run <release-name>.sh.
 
 In the case where you want to create a production ready release on one machine and then deploy it on multiple identical machines you may create a production package with 'make pacakge'.  To do this run 'make package' from the release/<release-name> directory. This will create a directory '<release-name>-<release-vsn>.  This this directory can be tarred up and the tar can be shipped to its destination and installed with faxien.  This directory may also be published to a repo for remote installation on another box via faxien.  See the docs for faxien at erlware.org for more details on this.  
 

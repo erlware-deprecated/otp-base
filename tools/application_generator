@@ -2,7 +2,6 @@
 
 cd $(dirname $0)
 
-
 if [ "$#" != "2" ];then
 	echo ""
 	echo "usage: $0 <appname> <prefix>"
@@ -21,7 +20,7 @@ APP_NAME=$1
 APP_NAME_UPPER_CASE=$(echo $APP_NAME | tr a-z A-Z)
 PREFIX=$2
 
-if [ -e ../../lib/$APP_NAME ];then
+if [ -e ../lib/$APP_NAME ];then
 	echo "an application with name $APP_NAME already exists would you like to delete it [y|N] $> \c"
 	read DEL
 	if [ "$DEL" != "y" ];then
@@ -29,17 +28,16 @@ if [ -e ../../lib/$APP_NAME ];then
 		exit 1
 	fi
 	echo "deleting $APP_NAME"
-	rm -rf ../../lib/$APP_NAME
+	rm -rf ../lib/$APP_NAME
 fi
 
 
-cd ../.appgen
+cd .appgen
 echo `pwd`
 
 cp -r blank_app $APP_NAME
 
 cd $APP_NAME/src
-ls ba* | ../../rename.sh ba $PREFIX
 ls blank_app* | ../../rename.sh blank_app $APP_NAME
 cd -
 
@@ -60,5 +58,3 @@ mv $APP_NAME ../../lib
 echo ""
 echo "$APP_NAME has been generated and placed under lib/$APP_NAME"
 echo ""
-
-cd ../utilities

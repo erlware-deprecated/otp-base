@@ -13,7 +13,7 @@ if [ "$#" != "1" ];then
 	exit 1
 fi
 
-if [ -e ../../release/$1 ];then
+if [ -e ../release/$1 ];then
 	echo "a release with name $1 already exists would you like to delete it [y|N] $> \c"
 	read DEL
 	if [ "$DEL" != "y" ];then
@@ -21,13 +21,13 @@ if [ -e ../../release/$1 ];then
 		exit 1
 	fi
 	echo "deleting $1"
-	rm -rf ../../release/$1
+	rm -rf ../release/$1
 fi
 
 REL_NAME=$1
 REL_NAME_UPPER_CASE=$(echo $REL_NAME | tr a-z A-Z)
 
-cd ../.appgen
+cd .appgen
 echo `pwd`
 
 rm -rf $REL_NAME
@@ -47,5 +47,3 @@ mv $REL_NAME ../../release
 echo ""
 echo "$REL_NAME has been generated and placed under release/$REL_NAME"
 echo ""
-
-cd ../utilities

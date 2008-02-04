@@ -1,0 +1,134 @@
+#!/bin/sh
+
+# create a directory to extract to.
+
+if [ "$1" = "help" ];then
+	echo "not entering any arguments will invoke an interactive install process"
+        echo "$0 [prefix current-faxien-install-dir erts-vsn]"
+        exit 0
+fi
+
+if [ "$#" = "4" ];then
+	PREFIX=$1
+	FAXIEN_INSTALL_DIR=$2
+	TARGET_ERTS_VSN=$3
+else
+	
+	DEFAULT_PREFIX=$(dirname $0)/otp-base
+	echo "Please enter the location for your OTP Base install. When doing so think about how you plan"
+	echo "to use OTP Base. If you plan to use a new install for each project you work on you should"
+	echo "install OTP Base into a directory named after your project like '/home/jdoe/my_project'."
+	echo "Alternatively if you plan to use a single OTP Base install to house many applications and"
+	echo "releases you should go with the default install of ./otp-base or a similarly generic prefix."
+	echo "Please enter your install location, aka prefix, here. Default: [$DEFAULT_PREFIX] $> \c"
+	read PREFIX
+
+	if [ "$PREFIX" = "" ];then
+		PREFIX=$DEFAULT_PREFIX
+	fi
+
+	if [ -e $PREFIX ];then
+		echo "$PREFIX already exists"
+		echo "Would you like to delete it? Answer [y|N] $> \c"
+		read RESP
+
+		case "$RESP" in
+			"y")
+				echo ""
+				echo "    Are you sure? This will delete your entire previous install."
+				echo "    Please type \"yes\" to continue $> \c"
+				read SURE_RESP
+				if [ "$SURE_RESP" != "yes" ];then
+					echo ""
+					echo "Keeping previous install, and aborting bootstrap."
+					exit 0
+				fi
+				echo ""
+				echo "Removing previous install"
+				rm -rf $PREFIX
+				;;
+			*)
+				echo "exiting the Erlware OTP Base bootstrap process"
+				exit 1
+				;;
+		esac
+
+	fi
+
+	DEFAULT_FAXIEN_INSTALL_DIR="/usr/local/erlware"
+	echo ""
+	echo "Please enter the base directory for your Faxien install [$DEFAULT_FAXIEN_INSTALL_DIR] $> \c"
+	read FAXIEN_INSTALL_DIR
+
+	if [ "$FAXIEN_INSTALL_DIR" = "" ];then
+		FAXIEN_INSTALL_DIR=$DEFAULT_FAXIEN_INSTALL_DIR
+	fi
+
+	if [ ! -e $FAXIEN_INSTALL_DIR ];then
+		echo "$FAXIEN_INSTALL_DIR does not exist. Please go to code.google.com/p/faxien and install Faxien"
+		exit 2
+	fi
+
+	DEFAULT_TARGET_ERTS_VSN=$(erl -s init stop | grep V | sed -e 's/.*V\([0-9\.]*\).*/\1/')
+	echo ""
+	echo "Please enter the erts version for the current version of Erlang you are running"
+	echo "It appears to be $DEFAULT_TARGET_ERTS_VSN and this will be the default value if you choose"
+	echo "not to enter one here. Default: [$DEFAULT_TARGET_ERTS_VSN] $> \c"
+	read TARGET_ERTS_VSN
+
+	if [ "$TARGET_ERTS_VSN" = "" ];then
+		TARGET_ERTS_VSN=$DEFAULT_TARGET_ERTS_VSN
+	fi
+
+	export PREFIX
+	export FAXIEN_INSTALL_DIR
+	export TARGET_ERTS_VSN
+fi
+	
+SKIP=`awk '/^__ARCHIVE_FOLLOWS__/ { print NR + 1; exit 0; }' $0`
+
+echo "Extracting the Erlware OTP Base bootstrap"
+echo Creating target directory $PREFIX
+
+mkdir -p $PREFIX
+
+if [ $? != 0 ]; then
+echo "Error executing mkdir, do you have permission?"
+exit 1
+fi
+
+export PREFIX=$(cd $PREFIX; pwd)
+
+echo Untaring into $PREFIX
+
+# Take the TGZ portion of this file and pipe it to tar.
+tail -n +$SKIP $0 > $PREFIX/tmp.tar.gz
+(cd $PREFIX; tar -zxf tmp.tar.gz)
+rm $PREFIX/tmp.tar.gz
+
+if [ $? != 0 ]; then
+echo "Unable to untar bootstrap"
+exit 1
+fi
+
+echo "Performing substitutions"
+echo "FAXIEN_INSTALL_DIR=$FAXIEN_INSTALL_DIR"
+echo "TARGET_ERTS_VSN=$TARGET_ERTS_VSN"
+
+FAXIEN_INSTALL_DIR=$(echo $FAXIEN_INSTALL_DIR | sed -e "s;\/;\\\/;g")
+sed -e "s;%FAXIEN_INSTALL_DIR%;$FAXIEN_INSTALL_DIR;" \
+    -e "s;%TARGET_ERTS_VSN%;$TARGET_ERTS_VSN;" \
+    $PREFIX/build/otp.mk > $PREFIX/build/otp.mk.tmp
+ 
+mv $PREFIX/build/otp.mk.tmp $PREFIX/build/otp.mk
+
+echo ""
+echo "*** Erlware OTP Base is now installed ***"
+echo ""
+echo "For instructions on how to get started please read the README"
+echo "file located inside your new Erlware OTP Base install"
+echo ""
+
+exit 0
+
+__ARCHIVE_FOLLOWS__

@@ -27,8 +27,8 @@ export ERL_RUN_TOP=/home/jdoe/erlang
 Creating a new application
 ==========================
 
-A new application can be created by using the application_generation utility in tools/utilities.
-This utility will create a basic OTP app framework under the lib directory 
+A new application can be created by using the tools/application_generation utility.
+This utility will create a basic OTP application framework under the lib directory 
 
 usage: application_generation <app-name> <prefix> 
 
@@ -45,7 +45,7 @@ lib/my_app
 Creating a new release
 ======================
 
-A release is the OTP packaging structure that binds together a number of applications, configuration, and startup scripts to create a standalone Erlang service.  To create a new release from which to run your application(s) you can use the tools/utilities/release_generation script. 
+A release is the OTP packaging structure that binds together a number of applications, configuration, and startup scripts to create a standalone Erlang service.  To create a new release from which to run your application(s) you can use the tools/release_generation script. 
 
 usage: release_generation <release-name>
 example usage: release_generation test

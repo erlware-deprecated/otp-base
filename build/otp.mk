@@ -9,12 +9,12 @@
 
 # The erts version to use when running your release
 ifndef TARGET_ERTS_VSN
-TARGET_ERTS_VSN=%TARGET_ERTS_VSN%
+TARGET_ERTS_VSN=5.5.5
 endif
 
 # The location of systemwide installed packages.
 ifndef ERLWARE_HOME
-ERLWARE_HOME=%FAXIEN_INSTALL_DIR%
+ERLWARE_HOME=/usr/local/erlware
 endif
 
 # group owner for library/include directories

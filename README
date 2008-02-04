@@ -5,10 +5,9 @@ Downloading Dependencies
 
 OTP Base requires a few erlang packages in order to run correctly. To get these applications we use Erlware Faxien which can be downloaded from 'http://code.google.com/p/faxien' and use it to install the required packages.
 
-1. Bootstrap Faxien with the appropriate bootstrapper from the download site.
+1. Install Erlang itself from sources found at erlang.org
 
-2. Install the 'erl' release package with 'faxien install' to provide an Erlang shell on your system. To do this run:
- - 'sudo /usr/local/erlware/bin/faxien install erl'
+2. Bootstrap Faxien with the appropriate bootstrapper from the download site.
 
 3. Install the following apps with 'faxien install-app'.
  - 'sudo /usr/local/erlware/bin/faxien install-app fslib'

@@ -9,34 +9,32 @@
 
 # The erts version to use when running your release
 ifndef TARGET_ERTS_VSN
-TARGET_ERTS_VSN=5.5.5
+TARGET_ERTS_VSN=%TARGET_ERTS_VSN%
 endif
 
 # The location of systemwide installed packages.
 ifndef ERLWARE_HOME
-ERLWARE_HOME=/usr/local/erlware
+ERLWARE_HOME=%FAXIEN_INSTALL_DIR%
 endif
 
-# group owner for library/include directories
-ERLANGDEV_GROUP=erlangdev
+# The location of the erlang runtime system.
+ifndef ERL_RUN_TOP
+ERL_RUN_TOP=$(ERLWARE_HOME)/erts_packages
+endif
 
-# ERL_TOP is root of Erlang source tree
-# ERL_RUN_TOP is root of Erlang target tree (some Ericsson Makefiles use $ROOT)
-# ERLANG_OTP is target root for Erlang code 
-# - see sasl/systools reference manual page; grep "TEST"
+# Compile flags to be passed to erlc
+ERL_COMPILE_FLAGS+=-W0
+
+#=================================================================
+# You will probably not need to change anything beneith this point
+#=================================================================
 
 # OS_TYPE is FreeBSD, NetBSD, OpenBSD, Linux, SCO_SV, SunOS. 
 OS_TYPE=${shell uname}
 
 # MHOST is the host where this Makefile runs.
 MHOST=${shell hostname -s}
-ERL_COMPILE_FLAGS+=-W0
-
-# The location of the erlang runtime system.
-ifndef ERL_RUN_TOP
-ERL_RUN_TOP=/usr/local/lib/erlang
-endif
-
+#
 # Edit to reflect local environment.
 # ifeq (${OS_TYPE},Linux)
 # ERL_RUN_TOP=/usr/local/lib/erlang

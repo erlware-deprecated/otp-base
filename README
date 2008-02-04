@@ -3,26 +3,25 @@ Much more information on these topics can be found at www.erlware.org
 Downloading Dependencies
 ========================
 
-OTP Base requires a few erlang applications in order to run correctly. The easiest way to get these applications is first to install Erlang from source and then to download faxien, code.google.com/p/faxien and use it to install the additional apps that don't come bundled with Erlang.
+OTP Base requires a few erlang packages in order to run correctly. To get these applications we use Erlware Faxien which can be downloaded from 'http://code.google.com/p/faxien' and use it to install the required packages.
 
-1. Bootstrap faxien with the appropriate bootstrapper from the download site.
-2. install the applications
- - run 'sudo /usr/local/erlware/bin/faxien install_app fslib'
- - run 'sudo /usr/local/erlware/bin/faxien install_app gas'
- - run 'sudo /usr/local/erlware/bin/faxien install_app eunit'
+1. Bootstrap Faxien with the appropriate bootstrapper from the download site.
+
+2. Install the 'erl' release package with 'faxien install' to provide an Erlang shell on your system. To do this run:
+ - 'sudo /usr/local/erlware/bin/faxien install erl'
+
+3. Install the following apps with 'faxien install-app'.
+ - 'sudo /usr/local/erlware/bin/faxien install-app fslib'
+ - 'sudo /usr/local/erlware/bin/faxien install-app gas'
+ - 'sudo /usr/local/erlware/bin/faxien install-app eunit'
+ *Tip* The Faxien release itself uses all the apps listed above so instead of installing them all separately you can save time by simply using the upgrade command to upgrade the existing versions to the latest greatest. Do this as follows: 'sudo /usr/local/erlware/bin/faxien upgrade-all-apps'
 
 at this point you should be ready to go. 
 
 Building the tree
 =================
 
-To build, type make, it should all work from there. 
-
-NOTE** if your system has erlang installed in a directory other than /usr/local/lib/erlang
-then you must set the environment variable ERL_RUN_TOP to that directory. For example
-if you have erlang installed in /home/jdoe/erlang then you should 
-export ERL_RUN_TOP=/home/jdoe/erlang
-
+To build, type make, it should all work from there. Applications are built under the 'lib' dir and releases under the 'release' directory.
 
 Creating a new application
 ==========================
@@ -55,7 +54,7 @@ The example above will create a release called test under release/test
 Running a release
 =================
 
-Your release should contain all that you need to run your application. You have only to exit your .rel.src file to add to it the applications you have developed over in the lib side.  If your application depends on any applications that are supplied outside of your otp-base build tree you can always install them with faxien and then add them to your .rel.src file as well.  
+Your release should contain all that you need to run your application. You have only to edit your .rel.src file to add to it the applications you have developed over in the lib side.  If your application depends on any applications that are supplied outside of your otp-base build tree you can always install them with faxien and then add them to your .rel.src file as well.  
 
 To run a release there are two options: The first is local. A local version can be found in the release/<release-name>/local directory which is added by the make process.  This should be used during development to run your release interactively via an Erlang shell.  To run a release in local mode cd into the "local" directory and run <release-name>.sh.
 

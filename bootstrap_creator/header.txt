@@ -20,7 +20,7 @@ else
 	echo "install OTP Base into a directory named after your project like '/home/jdoe/my_project'."
 	echo "Alternatively if you plan to use a single OTP Base install to house many applications and"
 	echo "releases you should go with the default install of ./otp-base or a similarly generic prefix."
-	echo "Please enter your install location, aka prefix, here. Default: [$DEFAULT_PREFIX] $> \c"
+	echo "Please enter your install location, aka prefix, here. Use an absolute path. Default: [$DEFAULT_PREFIX] $> \c"
 	read PREFIX
 
 	if [ "$PREFIX" = "" ];then

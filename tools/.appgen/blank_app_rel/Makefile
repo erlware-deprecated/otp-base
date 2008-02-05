@@ -130,3 +130,11 @@ $(PACKAGE_DIR)/bin/$(RELS): $(RELS).src
 
 $(PACKAGE_DIR): $(LOCAL_TARGETS) $(PACKAGE_DIR)/bin/$(RELS) $(PACKAGE_DIR)/releases/$(REL_VSN)/$(RELS).config 
 	cp $(LOCAL_DIR)/$(RELS).rel $@/releases/$(REL_VSN)/
+	@echo "FSLIB_DIR: $(FSLIB_DIR)"
+	mkdir $@/lib
+	@ erl -pz $(FSLIB_DIR)/ebin \
+	      -noshell \
+	      -s fs_lib commandline_apply fs_boot_smithe stage_apps [\"$(ERLWARE_LIB_PATH)/*\",\"$(USR_LIBPATH)/*\"] \
+                \"$(LOCAL_DIR)/$(RELS).rel\" \
+                $@/lib \
+	      -s init stop

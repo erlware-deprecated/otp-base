@@ -16,6 +16,7 @@ ERLWARE_LIB_PATH=$(ERLWARE_HOME)/application_packages/$(TARGET_ERTS_VSN)/lib
 FSLIB_DIR=$(ERLWARE_LIB_PATH)/$(shell ls $(ERLWARE_LIB_PATH) | grep fslib | sort -r | head -n 1)
 INSTALL_DIR=/usr/local/lib
 ABS_USER_LIBPATH=$(shell cd ../../lib;pwd)
+ERL=$(shell ERL=$(which erl); if [ "$${ERL}" = "" ];then ERL=$(ERLWARE_HOME)/bin/erl; fi; echo $${ERL})
 
 # ----------------------------------------------------
 # CREATE DIR STRUCTURE HERE
@@ -72,7 +73,7 @@ clean:
 $(LOCAL_DIR)/$(RELS).sh: 
 	@echo '#!/bin/sh' > $@
 	@echo "cd $(CURDIR)/$(LOCAL_DIR)" >> $@
-	@echo "erl -name $${USER}_$(RELS) -boot $(RELS) -config $(RELS).config \$$@" >> $@
+	@echo "$(ERL) -name $${USER}_$(RELS) -boot $(RELS) -config $(RELS).config \$$@" >> $@
 	chmod +x $@
 	@echo
 	@echo "==== Start local node with \"sh $@\" ===="
@@ -81,7 +82,7 @@ $(LOCAL_DIR)/$(RELS).sh:
 # Create the config file for local mode.
 $(LOCAL_DIR)/$(RELS).config: $(RELS).config.src
 	sed -e 's;%LOG_OTP%;$(CURDIR)/$(LOCAL_DIR)/log/$(REL_VSN);' \
-            -e 's;%RELS%;$(RELS);g' \
+            -e 's;%REL_NAME%;$(RELS);g' \
             -e 's;%HOME%;$(HOME);g' \
             -e 's;%BROADCAST_ADDRESS%;$(BROADCAST_ADDRESS);g' \
             -e 's;%CONTACT_NODE%;$(CONTACT_NODE);g' \
@@ -97,7 +98,7 @@ vsnit: $(RELS).rel.src
 # Create and position script and boot files for local mode.
 $(LOCAL_RELEASE_DEFINITION_FILES): 
 	@echo "FSLIB_DIR: $(FSLIB_DIR)"
-	@ erl -pz $(FSLIB_DIR)/ebin \
+	@ $(ERL) -pz $(FSLIB_DIR)/ebin \
 	      -noshell \
 	      -s fs_lib commandline_apply fs_boot_smithe make_script_and_boot [\"$(ERLWARE_LIB_PATH)/*\",\"$(ERL_RUN_TOP)/*\",\"$(USR_LIBPATH)\"] \
                 \"$$(basename `pwd`).rel.src.tmp\" \
@@ -113,7 +114,7 @@ $(LOCAL_RELEASE_DEFINITION_FILES):
 $(PACKAGE_DIR)/releases/$(REL_VSN)/$(RELS).config: $(RELS).config.src
 	mkdir -p `dirname $@`
 	sed -e 's;%LOG_OTP%;/tmp/;' \
-            -e 's;%RELS%;$(RELS);g' \
+            -e 's;%REL_NAME%;$(RELS);g' \
             -e 's;%REL_VSN%;$(REL_VSN);g' \
             -e 's;%HOME%;$(HOME);g' \
             -e 's;%BROADCAST_ADDRESS%;$(BROADCAST_ADDRESS);g' \
@@ -132,7 +133,7 @@ $(PACKAGE_DIR): $(LOCAL_TARGETS) $(PACKAGE_DIR)/bin/$(RELS) $(PACKAGE_DIR)/relea
 	cp $(LOCAL_DIR)/$(RELS).rel $@/releases/$(REL_VSN)/
 	@echo "FSLIB_DIR: $(FSLIB_DIR)"
 	mkdir $@/lib
-	@ erl -pz $(FSLIB_DIR)/ebin \
+	@ $(ERL) -pz $(FSLIB_DIR)/ebin \
 	      -noshell \
 	      -s fs_lib commandline_apply fs_boot_smithe stage_apps [\"$(ERLWARE_LIB_PATH)/*\",\"$(USR_LIBPATH)/*\"] \
                 \"$(LOCAL_DIR)/$(RELS).rel\" \

@@ -69,7 +69,13 @@ else
 		exit 2
 	fi
 
-	DEFAULT_TARGET_ERTS_VSN=$(erl -s init stop | grep V | sed -e 's/.*V\([0-9\.]*\).*/\1/')
+	ERL=$(which erl)
+	if [ "$ERL" = "" ];then
+		ERL=$FAXIEN_INSTALL_DIR/bin/erl
+		echo "erl not found on path using $ERL"
+	fi
+
+	DEFAULT_TARGET_ERTS_VSN=$($ERL -s init stop | grep V | sed -e 's/.*V\([0-9\.]*\).*/\1/')
 	echo ""
 	echo "Please enter the erts version for the current version of Erlang you are running"
 	echo "It appears to be $DEFAULT_TARGET_ERTS_VSN and this will be the default value if you choose"

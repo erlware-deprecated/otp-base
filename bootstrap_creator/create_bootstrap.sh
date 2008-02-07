@@ -6,7 +6,7 @@ FILENAME=otp-base-installer-$CURRENT_BOOTSTRAPPER_VSN.sh
 cd $(dirname $0)
 
 cd ../
-tar -zcvf contents.tar.gz Makefile README build lib licence.txt release tools
+tar -zcf contents.tar.gz Makefile README build lib LICENCE release tools
 cd -
 mv ../contents.tar.gz . 
 

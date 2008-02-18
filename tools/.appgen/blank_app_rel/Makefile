@@ -17,6 +17,10 @@ FSLIB_DIR=$(ERLWARE_LIB_PATH)/$(shell ls $(ERLWARE_LIB_PATH) | grep fslib | sort
 INSTALL_DIR=/usr/local/lib
 ABS_USER_LIBPATH=$(shell cd ../../lib;pwd)
 ERL=$(shell ERL=$(which erl); if [ "$${ERL}" = "" ];then ERL=$(ERLWARE_HOME)/bin/erl; fi; echo $${ERL})
+FAXIEN=$(shell FAXIEN=$(which faxien); if [ "$${FAXIEN}" = "" ];then FAXIEN=$(ERLWARE_HOME)/bin/faxien; fi; echo $${FAXIEN})
+
+
+USER_DEFINED_PACKAGE_FILES=control install.sh
 
 # ----------------------------------------------------
 # CREATE DIR STRUCTURE HERE
@@ -50,7 +54,7 @@ LOCAL_TARGETS=$(DIR_STRUCTURE) $(LOCAL_DIR)/$(RELS).sh vsnit $(LOCAL_TARGET_FILE
 
 all debug opt instr script: $(LOCAL_TARGETS) 
 
-package: $(PACKAGE_DIR)
+package: $(PACKAGE_DIR) 
 
 $(DIR_STRUCTURE):
 	mkdir -p $@
@@ -129,9 +133,12 @@ $(PACKAGE_DIR)/bin/$(RELS): $(RELS).src
 	    -e "s;%INVOCATION_SUFFIX%;-detached;" \
              $< > $@
 
+
 $(PACKAGE_DIR): $(LOCAL_TARGETS) $(PACKAGE_DIR)/bin/$(RELS) $(PACKAGE_DIR)/releases/$(REL_VSN)/$(RELS).config 
-	cp $(LOCAL_DIR)/$(RELS).rel $@/releases/$(REL_VSN)/
+	cp $(USER_DEFINED_PACKAGE_FILES) $(PACKAGE_DIR)/
+	cp $(LOCAL_DIR)/$(RELS).rel $@/releases/$(REL_VSN)
 	@echo "FSLIB_DIR: $(FSLIB_DIR)"
+	rm -rf $@/lib
 	mkdir $@/lib
 	@ $(ERL) -pz $(FSLIB_DIR)/ebin \
 	      -noshell \
@@ -139,3 +146,10 @@ $(PACKAGE_DIR): $(LOCAL_TARGETS) $(PACKAGE_DIR)/bin/$(RELS) $(PACKAGE_DIR)/relea
                 \"$(LOCAL_DIR)/$(RELS).rel\" \
                 $@/lib \
 	      -s init stop
+
+# ----------------------------------------------------
+# TARGETS FOR INSTALLATION
+# ----------------------------------------------------
+
+install: $(PACKAGE_DIR)
+	$(FAXIEN) install $(PACKAGE_DIR)

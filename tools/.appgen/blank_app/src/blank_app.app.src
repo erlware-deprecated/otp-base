@@ -1,19 +1,16 @@
 %%% -*- mode:erlang -*-
-{application, %APP_NAME%,
+{application, '%APP_NAME%',
  [
   % A quick description of the application.
   {description, "An Erlang Application."},
 
-  % The version of the applicaton
+  % The version of the applicaton. This is automatically populated by OTP Base
   {vsn, "%VSN%"},
 
-  % All modules used by the application. 
+  % All modules used by the application. This is automatically populated by OTP Base
   {modules,
    [
    ]},
-
-  % All of the registered names the application uses. This can be ignored.
-  {registered, []},
 
   % This is a list of the applications that your application depends on. This list must be filled out
   % carefully so that dependency resolution systems can function properly.
@@ -23,17 +20,13 @@
     stdlib
    ]},
 
-  % OTP application loader will load, but not start, included apps. Again
-  % this can be ignored as well.  To load but not start an application it
-  % is easier to include it in the .rel file followed by the atom 'none'
-  {included_applications, []},
-
-  % configuration parameters similar to those in the config file specified
-  % on the command line. can be fetched with gas:get_env
-  {env, []},
+  % A list of the registered processes in your application.  Used to prevent collisions. 
+  {registered, []},
 
   % The Module and Args used to start this application.
-  {mod, {%APP_NAME%, []}}
+  % Uncomment this and fill it out if you wish to start 
+  % your application via the otp framework.
+  % {mod, {ApplicationBehaviourModule, [StartArgs]}}
  ]
 }.
 

@@ -1,7 +1,7 @@
-MODULES = lib release
+SIDES = lib release
 
-all clean:
-	@for dir in $(MODULES); do \
+all clean package install:
+	@for dir in $(SIDES); do \
 		(cd $$dir; ${MAKE} $@); \
 		if [ "$$?" -ne "0" ]; then ERROR=$$?; echo "Error Code $$ERROR"; exit $$ERROR; fi; \
 	done

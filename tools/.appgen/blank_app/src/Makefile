@@ -14,16 +14,11 @@ PFX=%%PFX%%
 VSN=$(%%APP_NAME_UPPER_CASE%%_VSN)
 
 # ----------------------------------------------------
-# Install directory specification
-# WARNING: INSTALL_DIR the command to install a directory.
-#          INSTALL_DST is the target directory
-# ----------------------------------------------------
-INSTALL_DST = $(ERLANG_OTP)/lib/$(APP_NAME)-$(VSN)
-
-# ----------------------------------------------------
 # Target Specs
 # ----------------------------------------------------
 
+ERLWARE_LIB_PATH=$(ERLWARE_HOME)/application_packages/$(TARGET_ERTS_VSN)/lib
+FSLIB_DIR=$(ERLWARE_LIB_PATH)/$(shell ls $(ERLWARE_LIB_PATH) | grep fslib | sort -r | head -n 1)
 
 MODULES = $(shell ls *.erl | sed s/.erl//)
 MODULES_COMMA = $(shell ls *.erl | sed s/\\.erl/,/)
@@ -45,22 +40,19 @@ APPUP_TARGET= $(EBIN)/$(APPUP_FILE)
 BEAMS= $(MODULES:%=$(EBIN)/%.$(EMULATOR))
 TARGET_FILES= $(BEAMS) $(APP_TARGET) $(APPUP_TARGET)
 
-WEB_TARGET=/var/yaws/www/$(APP_NAME)
-
 # ----------------------------------------------------
 # FLAGS
 # ----------------------------------------------------
 
 ERL_FLAGS +=
-ERL_COMPILE_FLAGS += -I../include -I../../fslib/include -I../../system_status/include 
+ERL_COMPILE_FLAGS += -I../include $(shell cat $(APP_NAME).includes)
 
 # ----------------------------------------------------
 # Targets
 # ----------------------------------------------------
 
-all debug opt: $(EBIN) $(TARGET_FILES) 
+all debug opt: $(APP_NAME).includes $(EBIN) $(TARGET_FILES) 
 
-#$(EBIN)/rm_logger.beam: $(APP_NAME).hrl
 include ../../../build/docs.mk
 
 # Note: In the open-source build clean must not destroy the preloaded
@@ -70,6 +62,9 @@ clean:
 	rm -f core
 	rm -rf $(EBIN)
 	rm -rf *html
+	rm -f erl_crash.dump
+	rm -f *~*
+	rm -f $(APP_NAME).includes 
 
 $(EBIN):
 	mkdir $(EBIN)
@@ -77,6 +72,10 @@ $(EBIN):
 # ----------------------------------------------------
 # Special Build Targets
 # ----------------------------------------------------
+
+$(APP_NAME).includes:
+	$(ERL) -pz $(FSLIB_DIR)/ebin -noshell -s fs_lib commandline_apply fs_boot_smithe write_out_include_dirs \
+	[\"$(ERLWARE_LIB_PATH)/*\",\"../../*\"] \"$(APP_NAME).app.src\" \"$@\" -s init stop 
 
 $(APP_TARGET): $(APP_SRC) ../vsn.mk $(BEAMS)
 	sed -e 's;%VSN%;$(VSN);' \
@@ -92,21 +91,3 @@ $(APP_TARGET): $(APP_SRC) ../vsn.mk $(BEAMS)
 $(APPUP_TARGET): $(APPUP_SRC) ../vsn.mk
 	sed -e 's;%VSN%;$(VSN);' $< > $@
 
-$(WEB_TARGET): ../markup/* 
-	rm -rf $(WEB_TARGET) 
-	mkdir $(WEB_TARGET) 
-	cp -r ../markup/ $(WEB_TARGET)
-	cp -r ../skins/ $(WEB_TARGET)
-
-# ----------------------------------------------------
-# Install Target
-# ---------------------------------------------------- 
-
-install: all $(WEB_TARGET)
-#	$(INSTALL_DIR) $(INSTALL_DST)/src
-#	$(INSTALL_DATA) $(ERL_FILES) $(INSTALL_DST)/src
-#	$(INSTALL_DATA) $(INTERNAL_HRL_FILES) $(INSTALL_DST)/src
-#	$(INSTALL_DIR) $(INSTALL_DST)/include
-#	$(INSTALL_DATA) $(HRL_FILES) $(INSTALL_DST)/include
-#	$(INSTALL_DIR) $(INSTALL_DST)/ebin
-#	$(INSTALL_DATA) $(TARGET_FILES) $(INSTALL_DST)/ebin

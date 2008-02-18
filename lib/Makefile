@@ -2,6 +2,8 @@ include ../build/colors.mk
 
 MODULES=$(shell ls . | grep "[^(Makefile)]")
 
+package install: all
+
 all clean docs:
 	@for dir in $(MODULES); do \
 		(cd $$dir; if [ -e "SKIP" ]; then  echo $${MY_LRED:-$(LRED)}"skipping \"make $@\" for $$dir"; else ${MAKE} $@; fi); \

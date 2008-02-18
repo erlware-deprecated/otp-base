@@ -10,6 +10,7 @@
   % All modules used by the application. This is automatically populated by OTP Base
   {modules,
    [
+    %MODULES%
    ]},
 
   % This is a list of the applications that your application depends on. This list must be filled out

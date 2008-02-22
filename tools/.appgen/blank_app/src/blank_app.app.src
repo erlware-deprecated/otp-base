@@ -22,11 +22,13 @@
    ]},
 
   % A list of the registered processes in your application.  Used to prevent collisions. 
-  {registered, []},
+  {registered, []}
 
   % The Module and Args used to start this application.
   % Uncomment this and fill it out if you wish to start 
   % your application via the otp framework.
+  % Note* if you uncomment this make sure to add a comma after 
+  %       tuple above.
   % {mod, {ApplicationBehaviourModule, [StartArgs]}}
  ]
 }.

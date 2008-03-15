@@ -19,6 +19,9 @@ ABS_USER_LIBPATH=$(shell cd ../../lib;pwd)
 ERL=$(shell ERL=$(which erl); if [ "$${ERL}" = "" ];then ERL=$(ERLWARE_HOME)/bin/erl; fi; echo $${ERL})
 FAXIEN=$(shell FAXIEN=$(which faxien); if [ "$${FAXIEN}" = "" ];then FAXIEN=$(ERLWARE_HOME)/bin/faxien; fi; echo $${FAXIEN})
 
+
+USER_DEFINED_PACKAGE_FILES=control install.sh
+
 # ----------------------------------------------------
 # CREATE DIR STRUCTURE HERE
 # ----------------------------------------------------
@@ -41,7 +44,7 @@ LOCAL_RELEASE_DEFINITION_FILES= \
 	$(LOCAL_DIR)/$(RELS).script \
 	$(LOCAL_DIR)/$(RELS).boot
 
-LOCAL_TARGET_FILES=$(LOCAL_DIR)/$(RELS).config $(LOCAL_RELEASE_DEFINITION_FILES)
+LOCAL_TARGET_FILES=$(LOCAL_HTTP_CONF) $(LOCAL_DIR)/$(RELS).config $(LOCAL_RELEASE_DEFINITION_FILES)
 
 LOCAL_TARGETS=$(DIR_STRUCTURE) $(LOCAL_DIR)/$(RELS).sh vsnit $(LOCAL_TARGET_FILES) 
 
@@ -133,6 +136,7 @@ $(PACKAGE_DIR)/bin/$(RELS): $(RELS).src
 
 
 $(PACKAGE_DIR): $(LOCAL_TARGETS) $(PACKAGE_DIR)/bin/$(RELS) $(PACKAGE_DIR)/releases/$(REL_VSN)/$(RELS).config 
+	cp $(USER_DEFINED_PACKAGE_FILES) $(PACKAGE_DIR)/
 	cp $(LOCAL_DIR)/$(RELS).rel $@/releases/$(REL_VSN)
 	@echo "FSLIB_DIR: $(FSLIB_DIR)"
 	rm -rf $@/lib
@@ -149,4 +153,4 @@ $(PACKAGE_DIR): $(LOCAL_TARGETS) $(PACKAGE_DIR)/bin/$(RELS) $(PACKAGE_DIR)/relea
 # ----------------------------------------------------
 
 install: $(PACKAGE_DIR)
-	$(FAXIEN) install $(PACKAGE_DIR)
+	$(FAXIEN) install-release $(PACKAGE_DIR)

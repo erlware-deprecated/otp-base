@@ -1,6 +1,6 @@
 #!/bin/sh
 
-CURRENT_BOOTSTRAPPER_VSN="V7"
+CURRENT_BOOTSTRAPPER_VSN="V8"
 FILENAME=otp-base-installer-$CURRENT_BOOTSTRAPPER_VSN.sh
 
 cd $(dirname $0)

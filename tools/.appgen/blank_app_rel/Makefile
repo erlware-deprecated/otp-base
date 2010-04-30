@@ -12,7 +12,7 @@ include ../../build/otp.mk
 include ./vsn.mk
 
 USR_LIBPATH=../../lib
-ERLWARE_LIB_PATH=$(ERLWARE_HOME)/application_packages/$(TARGET_ERTS_VSN)/lib
+ERLWARE_LIB_PATH=$(ERLWARE_HOME)/lib
 FSLIB_DIR=$(ERLWARE_LIB_PATH)/$(shell ls $(ERLWARE_LIB_PATH) | grep fslib | sort -r | head -n 1)
 INSTALL_DIR=/usr/local/lib
 ABS_USER_LIBPATH=$(shell cd ../../lib;pwd)

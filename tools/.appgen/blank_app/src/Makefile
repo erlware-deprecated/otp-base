@@ -17,7 +17,7 @@ VSN=$(%%APP_NAME_UPPER_CASE%%_VSN)
 # Target Specs
 # ----------------------------------------------------
 
-ERLWARE_LIB_PATH=$(ERLWARE_HOME)/application_packages/$(TARGET_ERTS_VSN)/lib
+ERLWARE_LIB_PATH=$(ERLWARE_HOME)/lib
 FSLIB_DIR=$(ERLWARE_LIB_PATH)/$(shell ls $(ERLWARE_LIB_PATH) | grep fslib | sort -r | head -n 1)
 
 MODULES = $(shell ls *.erl | sed s/.erl//)
